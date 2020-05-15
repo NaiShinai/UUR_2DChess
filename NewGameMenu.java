@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -48,7 +49,6 @@ public class NewGameMenu extends Application{
 	@Override
 	public void start(Stage newGameStage) throws Exception {
 		newGameStage.setTitle("2DChess");
-
 
 		newGameStage.setScene(getScene());
 		newGameStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
@@ -145,33 +145,42 @@ public class NewGameMenu extends Application{
 		whiteRB2.setFont(fontOptions);
 		whiteRB2.setOnAction(event -> {
 			blackRB1.setSelected(true);
-			whiteRB2.setSelected(false);
+			whiteRB1.setSelected(false);
 		});
 
 		blackRB2.setToggleGroup(toggleColors2);
 		blackRB2.setFont(fontOptions);
 		blackRB2.setOnAction(event -> {
 			whiteRB1.setSelected(true);
-			blackRB2.setSelected(false);
+			blackRB1.setSelected(false);
 		});
 
 		//labels specifikujici menu volby
-		Label name = new Label("Jméno:");
-		name.setFont(fontDescription);
-		Label barva = new Label("Barva:");
-		barva.setFont(fontDescription);
+		Label nameLB = new Label("Jméno:");
+		nameLB.setFont(fontDescription);
+		Label barvaLB = new Label("Barva:");
+		barvaLB.setFont(fontDescription);
 		//nastaveni pozice labelu v bunce
-		GridPane.setHalignment(barva, HPos.CENTER);	
+		GridPane.setHalignment(barvaLB, HPos.CENTER);	
 
+		//tlacitko pro navrat do hlavniho menu
+		Button backBT = new Button("Zpìt");
+		backBT.setMinHeight(65);
+		backBT.setFont(fontDescription);
+		backBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+				+ "-fx-border-color: rgb(128, 128, 128)");
+		GridPane.setHalignment(backBT, HPos.CENTER);
+		
 		//pridani nodes do gridpane
-		selectionGP.add(name, 0, 0);
-		selectionGP.add(barva, 1, 0, 2, 1);
+		selectionGP.add(nameLB, 0, 0);
+		selectionGP.add(barvaLB, 1, 0, 2, 1);
 		selectionGP.add(whiteRB1, 1, 1);
 		selectionGP.add(player1TF, 0, 1);
 		selectionGP.add(player2TF, 0, 2);
 		selectionGP.add(blackRB1, 2, 1);
 		selectionGP.add(whiteRB2, 1, 2);
 		selectionGP.add(blackRB2, 2, 2);
+		selectionGP.add(backBT, 0, 4, 3, 1);
 
 		//selectionGP.setGridLinesVisible(true);
 		selectionGP.setHgap(30);
