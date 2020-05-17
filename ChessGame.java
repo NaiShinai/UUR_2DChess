@@ -1,5 +1,10 @@
 package chess;
 
+import java.io.File;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -23,7 +28,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -39,7 +43,9 @@ public class ChessGame extends Application {
 	private final RadioButton blackRB1 = new RadioButton("Èerná");
 	private final RadioButton whiteRB2 = new RadioButton("Bílá");
 	private final RadioButton blackRB2 = new RadioButton("Èerná");
-
+	/** zvukovy soubor kliknuti na tlacitko */
+	public final File click = new File("click.wav");
+	
 	/**
 	 * Spusti aplikaci
 	 * @param args
@@ -98,38 +104,67 @@ public class ChessGame extends Application {
 	 */
 	private Node getMainMenuButtons() {
 		VBox menuButtonsVB = new VBox();
-
 		//font pro text tlacitek
 		Font font = new Font("Impact", 55);
 
-		//tlacitka v hlavnim menu
-		//tlacitko pro novou hru - prenese uzivatele na obrazovku pro novou hru
-		Button newGame = new Button("Nová hra");
-		newGame.setMinSize(320, 100);
-		newGame.setFont(font);
-		newGame.setStyle("-fx-background-color: rgb(211, 211, 211);"
+		// ***** tlacitka v hlavnim menu
+		// tlacitko pro novou hru - prenese uzivatele na obrazovku pro novou hru
+		Button newGameBT = new Button("Nová hra");
+		newGameBT.setMinSize(320, 100);
+		newGameBT.setFont(font);
+		newGameBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
 				+ "-fx-border-color: rgb(128, 128, 128)");
 		//nastavi scenu pro menu nove hry
-		newGame.setOnAction(event -> { 
+		newGameBT.setOnAction(event -> { 
+			//prehraje zvuk po kliknuti
+			try {
+				Clip clip = AudioSystem.getClip();
+				clip.open(AudioSystem.getAudioInputStream(click));
+				clip.start();
+			}
+			catch(Exception e) {
+			}
+			//prepne scenu
 			window.hide();
 			window.setScene(getNewGameMenuScene());
 			window.show();
 		});
+		//uprava grafiky tlacitka
+		newGameBT.setOnMouseEntered(event -> {
+			newGameBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(210,105,30);"
+					+ "-fx-border-width: 5");
+		});
+		newGameBT.setOnMouseExited(event -> {
+			newGameBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(128, 128, 128)");
+		});
+
+		// tlacitko pro nacteni hry
+		Button loadGameBT = new Button("Naèíst hru");
+		loadGameBT.setMinSize(320, 100);
+		loadGameBT.setFont(font);
+		loadGameBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+				+ "-fx-border-color: rgb(128, 128, 128)");
+		//uprava grafiky tlacitka
+		loadGameBT.setOnMouseEntered(event -> {
+			loadGameBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(210,105,30);"
+					+ "-fx-border-width: 5");
+		});
+		loadGameBT.setOnMouseExited(event -> {
+			loadGameBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(128, 128, 128)");
+		});
 		
-		Button loadGame = new Button("Naèíst hru");
-		loadGame.setMinSize(320, 100);
-		loadGame.setFont(font);
-		loadGame.setStyle("-fx-background-color: rgb(211, 211, 211);"
+		// tlacitko pro ukonceni hry
+		Button exitBT = new Button("Konec hry");
+		exitBT.setMinSize(320, 100);
+		exitBT.setFont(font);
+		exitBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
 				+ "-fx-border-color: rgb(128, 128, 128)");
-		//tlacitko pro ukonceni hry
-		Button exit = new Button("Konec hry");
-		exit.setMinSize(320, 100);
-		exit.setFont(font);
-		exit.setStyle("-fx-background-color: rgb(211, 211, 211);"
-				+ "-fx-border-color: rgb(128, 128, 128)");
-		//ukonci aplikaci
-		//zobrazi uzivateli dialogove okno s potvrzenim
-		exit.setOnAction(event -> {
+		//ukonci aplikaci a zobrazi uzivateli dialogove okno s potvrzenim ano/ne
+		exitBT.setOnAction(event -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
 
@@ -142,18 +177,36 @@ public class ChessGame extends Application {
 			alert.getButtonTypes().addAll(yesBT, noBT);
 			alertStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 			alertStage.showAndWait();
-			
+
 			//pokud uzivatel zvoli ano - ukonci aplikaci
 			if(alert.getResult() == yesBT) {
+				//prehraje zvuk po kliknuti
+				try {
+					Clip clip = AudioSystem.getClip();
+					clip.open(AudioSystem.getAudioInputStream(click));
+					clip.start();
+				}
+				catch(Exception e) {
+				}
 				Platform.exit();
 			}
 			alert.close();
+		});
+		//uprava grafiky tlacitka
+		exitBT.setOnMouseEntered(event -> {
+			exitBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(210,105,30);"
+					+ "-fx-border-width: 5");
+		});
+		exitBT.setOnMouseExited(event -> {
+			exitBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(128, 128, 128)");
 		});
 
 		//pridani tlacitek do Vboxu
 		menuButtonsVB.setSpacing(25);
 		menuButtonsVB.setPadding(new Insets(40));
-		menuButtonsVB.getChildren().addAll(newGame, loadGame, exit);
+		menuButtonsVB.getChildren().addAll(newGameBT, loadGameBT, exitBT);
 		menuButtonsVB.setAlignment(Pos.BOTTOM_CENTER);
 
 		return menuButtonsVB;
@@ -222,15 +275,18 @@ public class ChessGame extends Application {
 	private Node getPlayerSelection() {
 		GridPane selectionGP = new GridPane();
 
-		//togglegroup volby barvy
+		// togglegroup volby barvy
 		ToggleGroup toggleColors1 = new ToggleGroup();
 		ToggleGroup toggleColors2 = new ToggleGroup();
+		// togglegroup pro vyber typu hry
+		ToggleGroup toggleGame = new ToggleGroup();
 
 		//fonty pro pisma v gridpanu
 		Font fontDescription = new Font("Impact", 32);
 		Font fontOptions = new Font("Impact", 20);
 
-		//textfieldy pro nastaveni jmena hrace
+		// ***** textfieldy pro nastaveni jmena hrace
+		// hrac 1
 		TextField player1TF = new TextField();
 		player1TF.setMaxWidth(100);
 		player1TF.setMinHeight(35);
@@ -238,6 +294,8 @@ public class ChessGame extends Application {
 		player1TF.setFont(fontOptions);
 		player1TF.setStyle("-fx-background-color: rgb(211, 211, 211);"
 				+ "-fx-border-color: rgb(128, 128, 128)");
+		
+		// hrac 2
 		TextField player2TF = new TextField();
 		player2TF.setMaxWidth(100);
 		player2TF.setMinHeight(35);
@@ -246,7 +304,8 @@ public class ChessGame extends Application {
 		player2TF.setStyle("-fx-background-color: rgb(211, 211, 211);"
 				+ "-fx-border-color: rgb(128, 128, 128)");
 
-		//radiobuttons pro volbu barvy hracu
+		// ***** radiobuttons pro volbu barvy hracu
+		// bila barva hrac 1
 		whiteRB1.setToggleGroup(toggleColors1);
 		whiteRB1.setFont(fontOptions);
 		//pokud je vybrana bila barva 1, automaticky vybere cernou barvu 2
@@ -254,49 +313,69 @@ public class ChessGame extends Application {
 			blackRB2.setSelected(true);
 			whiteRB2.setSelected(false);
 		});
+		
+		// cerna barva hrac 1
 		blackRB1.setToggleGroup(toggleColors1);
 		blackRB1.setFont(fontOptions);
-		//pokud je vybrana cerna barva 1, automaticky vybere bilou barvu 2
+		// pokud je vybrana cerna barva 1, automaticky vybere bilou barvu 2
 		blackRB1.setOnAction(event -> {
 			whiteRB2.setSelected(true);
 			blackRB2.setSelected(false);
 		});
+		
+		// bila barva hrac 2
 		whiteRB2.setToggleGroup(toggleColors2);
 		whiteRB2.setFont(fontOptions);
-		//pokud je vybrana bila barva 2, automaticky vybere cernou barvu 1
+		// pokud je vybrana bila barva 2, automaticky vybere cernou barvu 1
 		whiteRB2.setOnAction(event -> {
 			blackRB1.setSelected(true);
 			whiteRB1.setSelected(false);
 		});
+		
+		// cerna barva hrac 2
 		blackRB2.setToggleGroup(toggleColors2);
 		blackRB2.setFont(fontOptions);
-		//pokud je vybrana cerna barva 2, automaticky vybere bilou barvu 1
+		// pokud je vybrana cerna barva 2, automaticky vybere bilou barvu 1
 		blackRB2.setOnAction(event -> {
 			whiteRB1.setSelected(true);
 			blackRB1.setSelected(false);
 		});
-
-		//labels specifikujici menu volby
+		
+		// ***** radiobuttons pro vyber typu hry
+		// klasicka hra (na cas)
+		RadioButton classicRB = new RadioButton("Klasická");
+		classicRB.setToggleGroup(toggleGame);
+		classicRB.setFont(fontOptions);
+		// neomezena hra
+		RadioButton unlimitedRB = new RadioButton("Neomezená");
+		unlimitedRB.setToggleGroup(toggleGame);
+		unlimitedRB.setFont(fontOptions);
+		
+		// ***** labels specifikujici menu volby
+		// jmeno hracu
 		Label nameLB = new Label("Jméno:");
 		nameLB.setFont(fontDescription);
+		
+		// barva hracu
 		Label barvaLB = new Label("Barva:");
 		barvaLB.setFont(fontDescription);
-		//nastaveni pozice labelu v bunce
-		GridPane.setHalignment(barvaLB, HPos.CENTER);	
+		
+		// styl hry (klasicka (na cas) / neomezena
+		Label gameLB = new Label("Styl hry:");
+		gameLB.setFont(fontDescription);
 
-		//tlacitko pro navrat do hlavniho menu
+		// ***** tlacitka v menu pro novou hru
+		// tlacitko pro navrat do hlavniho menu
 		Button backBT = new Button("Zpìt");
 		backBT.setMinHeight(65);
 		backBT.setFont(fontDescription);
 		backBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
 				+ "-fx-border-color: rgb(128, 128, 128)");
 		GridPane.setHalignment(backBT, HPos.CENTER);
-		//vrati uzivatele do hlavniho menu
-		//zobrazi uzivateli dialogove okno s potvrzenim
+		// vrati uzivatele do hlavniho menu a zobrazi mu dialogove okno s potvrzenim ano/ne
 		backBT.setOnAction(event -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
-
 			ButtonType yesBT = new ButtonType("Ano");
 			ButtonType noBT = new ButtonType("Ne");
 
@@ -306,38 +385,71 @@ public class ChessGame extends Application {
 			alert.getButtonTypes().addAll(yesBT, noBT);
 			alertStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 			alertStage.showAndWait();
-			//pokud uzivatel zvoli ano - vrati se do hlavniho menu
+			
+			// pokud uzivatel zvoli ano - vrati se do hlavniho menu, jinak zavre alert
 			if(alert.getResult() == yesBT) {
+				//prehraje zvuk po kliknuti
+				try {
+					Clip clip = AudioSystem.getClip();
+					clip.open(AudioSystem.getAudioInputStream(click));
+					clip.start();
+				}
+				catch(Exception e) {
+				}
 				window.hide();
 				window.setScene(getMainMenuScene());
 				window.show();
 			}
 			alert.close();
 		});
-		
-		//tlacitko pro pokracovani do hry
+		// uprava grafiky tlacitka
+		backBT.setOnMouseEntered(event -> {
+			backBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(210,105,30);"
+					+ "-fx-border-width: 5");
+		});
+		backBT.setOnMouseExited(event -> {
+			backBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(128, 128, 128)");
+		});
+
+		// tlacitko pro pokracovani do hry
 		Button continueBT = new Button("Pokraèovat");
 		continueBT.setFont(fontDescription);
 		continueBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
 				+ "-fx-border-color: rgb(128, 128, 128)");
 		GridPane.setHalignment(continueBT, HPos.CENTER);
+		// uprava grafiky tlacitka
+		continueBT.setOnMouseEntered(event -> {
+			continueBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(210,105,30);"
+					+ "-fx-border-width: 5");
+		});
+		continueBT.setOnMouseExited(event -> {
+			continueBT.setStyle("-fx-background-color: rgb(211, 211, 211);"
+					+ "-fx-border-color: rgb(128, 128, 128)");
+		});
 
-		//pridani nodes do gridpane
+		// pridani nodes do gridpane
 		selectionGP.add(nameLB, 0, 0);
 		selectionGP.add(barvaLB, 1, 0, 2, 1);
-		selectionGP.add(whiteRB1, 1, 1);
+		selectionGP.add(gameLB, 3, 0, 2, 1);
+		selectionGP.add(whiteRB1, 1, 1);//nejdrive pridan jeden radiobutton z duvodu automatickeho vyberu prvniho pridaneho prvku 
 		selectionGP.add(player1TF, 0, 1);
 		selectionGP.add(player2TF, 0, 2);
 		selectionGP.add(blackRB1, 2, 1);
 		selectionGP.add(whiteRB2, 1, 2);
 		selectionGP.add(blackRB2, 2, 2);
+		selectionGP.add(classicRB, 3, 1);
+		selectionGP.add(unlimitedRB, 3, 2);
 		selectionGP.add(backBT, 2, 4, 2, 1);
 		selectionGP.add(continueBT, 0, 4, 2, 1);
 
-		selectionGP.setHgap(30);
+		selectionGP.setHgap(40);
 		selectionGP.setVgap(15);
 		selectionGP.setStyle("-fx-background-color: rgb(240, 210, 150);");
 
+		selectionGP.setGridLinesVisible(false);
 		selectionGP.setAlignment(Pos.TOP_CENTER);
 
 		return selectionGP;
