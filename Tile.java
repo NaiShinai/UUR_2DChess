@@ -23,7 +23,7 @@ public abstract class Tile {
 	private static Map<Integer, EmptyTile> createEmptyTiles() {
 		final Map<Integer, EmptyTile> emptyTileMap = new HashMap<>();
 
-		for (int i = 0; i < 64; i++) {
+		for (int i = 0; i < BoardFunctions.TILES_COUNT; i++) {
 			emptyTileMap.put(i, new EmptyTile(i));
 		}
 
